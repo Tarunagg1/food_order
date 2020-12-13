@@ -5390,3 +5390,15 @@ h5.panel-title span {
     margin: 7px;
     color: red;
 }
+
+.paymentstatus{
+    padding: 10px;
+    font-weight: 500;
+    color: white;
+}
+.orderstatuspending{
+    background-color: red;
+}
+.orderstatussuccess{
+    background-color: green;
+}

@@ -131,7 +131,8 @@ function addtocart(id,type){
                                     </div>`;
                             jQuery(".header-cart").append(html);
                         }else{
-                             var html = `<li id="attr_${attr}" class="single-shopping-cart">
+                                jQuery('#attr_'+attr).remove();
+                                var html = `<li id="attr_${attr}" class="single-shopping-cart">
                                                     <div class="shopping-cart-img">
                                                         <a href="javascript:void(0)"><img style="width: 100%;" alt="" src="http://localhost/foodorder/media/dish/${data.dishimg}"></a>
                                                     </div>

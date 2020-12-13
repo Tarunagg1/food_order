@@ -1,5 +1,6 @@
 <?php
     include('header.php');
+    include('../mail_function.php');
     $totalPrice = 0;
     $cartarr = getuserfullcart();
     foreach ($cartarr as $key => $list) {
@@ -14,6 +15,7 @@
         $islogin = true;
         $userdata = getuserbyid();
     }
+    $email = '';
     if(isset($_POST['placeorder'])){
         $uid = $_SESSION['USER_ID'];
         $name = get_safe_value($_POST['fname']);
@@ -30,6 +32,8 @@
             mysqli_query($con,"INSERT INTO `order_detail`(`order_id`, `dish_details_id`, `price`, `qty`) VALUES ('$insertid','$key','".$val['price']."','".$val['qty']."')");
         }
         emptycart();
+        $msg = orderemail($insertid);
+        sendmailuser($email,"Your Order Placed Successfully",$msg);
         redirect('shop');
     }
 

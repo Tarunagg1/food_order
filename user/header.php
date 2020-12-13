@@ -80,7 +80,7 @@ if(isset($_POST['updatecart'])){
                                     <li class="top-hover"><a href="javascript:void(0)">Welcome <span id="headeruname"><?php echo $getUserDetails['name']; ?></span> <i class="ion-chevron-down"></i></a>
                                         <ul>
                                             <li><a href="profile">Profile</a></li>
-                                            <li><a href="myorder">My Order</a></li>
+                                            <li><a href="orderhistory">My Order</a></li>
                                             <li><a href="logout">Logout</a></li>
                                         </ul>
                                     </li>

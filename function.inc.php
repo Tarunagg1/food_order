@@ -146,5 +146,136 @@ function getorderdetailsbyid($oid)
     }
     return $data;
 }
+function getorderbyid($oid){
+    global $con;
+    $data = array();
+    $sql = "SELECT * FROM order_master WHERE id='$oid'";
+    $res = mysqli_query($con,$sql);
+    while ($row = mysqli_fetch_assoc($res)) {
+        $data[] = $row;
+    }
+    return $data;
+}
+
+function orderemail($oid)
+{
+    $uid = $_SESSION['USER_ID'];
+    $udetails = getuserbyid($uid);
+    $pdata = getorderbyid($oid);
+    $email = $pdata[0]['email'];
+    $name = $pdata[0]['name'];
+    $total_price = $pdata[0]['total_price'];
+    $mobile = $pdata[0]['mobile'];
+    $name = $pdata[0]['name'];
+    $getOrderDetails = getorderdetailsbyid($oid);
+
+    $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="x-apple-disable-message-reformatting" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" href="assets/css/invoice.css">     
+      </head>
+      <body>
+        <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+          <tr>
+            <td align="center">
+              <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td class="email-masthead">
+                  <img src="https://i.ibb.co/6myys4W/logo-1.png"/>
+                  </a>
+                  </td>
+                </tr>
+                <!-- Email Body -->
+                <tr>
+                  <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
+                    <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+                      <!-- Body content -->
+                      <tr>
+                        <td class="content-cell">
+                          <div class="f-fallback">
+                            <h1>Hi '.ucfirst($name).',</h1>
+                            <h3>'.$email.',</h3>
+                            <h4>'.$mobile.',</h4>
+                            <p>This is an invoice for your recent purchase.</p>
+                            <table class="attributes" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                              <tr>
+                                <td class="attributes_content">
+                                  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                                    <tr>
+                                      <td class="attributes_item">
+                                        <span class="f-fallback">
+                                        <strong>Amount Due:</strong>'.$total_price.'
+                                        </span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="attributes_item">
+                                        <span class="f-fallback">
+                                    <strong>Order ID:</strong> '.$oid.'
+                                    </span>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                            <!-- Action -->
+                            
+                            <table class="purchase" width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                            <td colspan="2">
+                              <table class="purchase_content" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                  <th class="purchase_heading" align="left">
+                                    <p class="f-fallback">Description</p>
+                                  </th>
+								   <th class="purchase_heading" align="left">
+                                    <p class="f-fallback">Qty</p>
+                                  </th>
+                                  <th class="purchase_heading" align="right">
+                                    <p class="f-fallback">Amount</p>
+                                  </th>
+                                </tr>';
+                                    
+                                $total_price=0;
+                                foreach($getOrderDetails as $list){
+									$item_price=$list['qty']*$list['price'];
+									$total_price=$total_price+$item_price;
+									$html.='<tr>
+									  <td width="40%" class="purchase_item"><span class="f-fallback">'.$list['dish'].'('.$list['attribute'].')</span></td>
+									  <td width="40%" class="purchase_item"><span class="f-fallback">'.$list['qty'].'</span></td>
+									  <td class="align-right" width="20%" class="purchase_item"><span class="f-fallback">'.$item_price.'</span></td>
+									</tr>';
+                                }
+                                $html.='<tr>
+                                  <td width="80%" class="purchase_footer" valign="middle" colspan="2">
+                                    <p class="f-fallback purchase_total purchase_total--label">Total</p>
+                                  </td>
+                                  <td width="20%" class="purchase_footer" valign="middle">
+                                    <p class="f-fallback purchase_total">'.$total_price.'</p>
+                                  </td>
+                                </tr>
+                              </table>
+                            <p>If you have any questions about this invoice, simply reply to this email or reach out to our <a href="{{support_url}}">support team</a> for help.</p>
+                            <p>Cheers,
+                              <br>The Aggarwal Team</p>                        
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>';
+    return $html;
+}
 
 ?>
