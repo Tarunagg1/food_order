@@ -32,6 +32,7 @@
   <!-- endinject -->
   <!-- Custom js for this page-->
   <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/custom.js"></script>
   <script src="assets/js/data-table.js"></script>
   <!-- End custom js for this page-->
 </body>

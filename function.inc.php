@@ -56,6 +56,46 @@ function manage_user_cart($uid,$qty,$attr)
     }
 }
 
+
+function getdishcartstatus()
+{
+  global $con;
+  $cartarr = array();
+  $dishdetailsid = array();
+  if(isset($_SESSION['USER_ID']) && isset($_SESSION['USER_NAME'])){
+    $getuserdata = getusercart();
+    $cartarr = array();
+    foreach($getuserdata as $list){
+      // $list['dish_details_id']
+      $dishdetailsid[] = $list['dish_details_id'];
+    }    
+  }else {
+    if(isset($_SESSION['cart']) && count($_SESSION['cart']) > 0){
+        foreach($_SESSION['cart'] as $key => $list){
+              // $list['dish_details_id']
+              $dishdetailsid[] = $list['dish_details_id'];
+        }
+    }
+}
+
+  foreach ($dishdetailsid as $id) {
+    $res = mysqli_query($con,"SELECT dish_details.status,dish.status as dish_status,dish.id FROM dish_details,dish WHERE dish_details.id ='$id' AND dish_details.dish_id=dish.id");
+    $row = mysqli_fetch_assoc($res);
+    if($row['dish_status'] == 0){
+      $id = $row['id'];
+      $re = mysqli_query($con,"SELECT id FROM dish_details WHERE dish_id='$id'");
+      while ($row1 = mysqli_fetch_assoc($re)) {  
+        removedishfromcartbyid($row1['id']); 
+      }
+    }
+    if($row['status'] == 0){
+      removedishfromcartbyid($id); 
+    }
+
+  }
+
+}
+
 function getuserfullcart($attr_id='')
 {
     $cartarr = array();
@@ -63,20 +103,20 @@ function getuserfullcart($attr_id='')
         $getuserdata = getusercart();
         $cartarr = array();
         foreach($getuserdata as $list){
-            $cartarr[$list['dish_details_id']]['qty']=$list['qty'];
-            $getdishdetails = getdishdetailsbyid($list['dish_details_id']);
-            $cartarr[$list['dish_details_id']]['price'] = $getdishdetails['price'];
-            $cartarr[$list['dish_details_id']]['dishname'] = $getdishdetails['dish'];
-            $cartarr[$list['dish_details_id']]['image'] = $getdishdetails['image'];
+          $cartarr[$list['dish_details_id']]['qty']=$list['qty'];
+          $getdishdetails = getdishdetailsbyid($list['dish_details_id']);
+          $cartarr[$list['dish_details_id']]['price'] = $getdishdetails['price'];
+          $cartarr[$list['dish_details_id']]['dishname'] = $getdishdetails['dish'];
+          $cartarr[$list['dish_details_id']]['image'] = $getdishdetails['image'];
         }    
     }else {
         if(isset($_SESSION['cart']) && count($_SESSION['cart']) > 0){
             foreach($_SESSION['cart'] as $key => $list){
-                $cartarr[$key]['qty']=$list['qty'];
-                $getdishdetails = getdishdetailsbyid($key);
-                $cartarr[$key]['price']= $getdishdetails['price'];
-                $cartarr[$key]['dishname']= $getdishdetails['dish'];
-                $cartarr[$key]['image']= $getdishdetails['image'];       
+              $cartarr[$key]['qty']=$list['qty'];
+              $getdishdetails = getdishdetailsbyid($key);
+              $cartarr[$key]['price']= $getdishdetails['price'];
+              $cartarr[$key]['dishname']= $getdishdetails['dish'];
+              $cartarr[$key]['image']= $getdishdetails['image'];    
             }
         }
     }
@@ -156,6 +196,7 @@ function getorderbyid($oid){
     }
     return $data;
 }
+
 
 function orderemail($oid)
 {
@@ -277,5 +318,24 @@ function orderemail($oid)
     </html>';
     return $html;
 }
+
+
+function dateformat($date){
+    $str = strtotime($date);
+    return date('d-m-y',$str);
+}
+
+function getDeliveryBoyNameById($id){
+    global $con;
+    $data = mysqli_fetch_assoc(mysqli_query($con,"SELECT `name` FROM delivery_boy WHERE id='$id'"));
+    return $data['name'];
+}
+
+function getwebsetting(){
+  global $con;
+  $res = mysqli_fetch_assoc(mysqli_query($con,"SELECT * FROM web_setting WHERE id='1'"));
+  return $res;
+}
+
 
 ?>

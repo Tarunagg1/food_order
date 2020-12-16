@@ -16,7 +16,17 @@
         $userdata = getuserbyid();
     }
     $email = '';
+    $iscarterror = '';
     if(isset($_POST['placeorder'])){
+        if($cart_min_price > 0){
+            if($totalPrice >= $cart_min_price){
+
+            }else{
+                $iscarterror = 'yes';
+            }
+        }
+
+      if($iscarterror == ''){
         $uid = $_SESSION['USER_ID'];
         $name = get_safe_value($_POST['fname']);
         $email =get_safe_value($_POST['email']);
@@ -35,6 +45,7 @@
         $msg = orderemail($insertid);
         sendmailuser($email,"Your Order Placed Successfully",$msg);
         redirect('shop');
+      }
     }
 
 ?>
@@ -102,7 +113,7 @@
                             </div>
                         </div>
                         <?php } ?>
-                        <?php if($islogin){ ?>
+                        <?php if($islogin && $webclose == 0){ ?>
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h5 class="panel-title"><span>1.</span> <a data-toggle="collapse" data-parent="#faq"
@@ -117,39 +128,52 @@
                                                     <div class="billing-info">
                                                         <label>Name</label>
                                                         <input name="fname" value="<?php echo $userdata['name']; ?>"
-                                                            type="text">
+                                                            type="text" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="billing-info">
                                                         <label>Email Address</label>
                                                         <input name="email" value="<?php echo $userdata['email']; ?>"
-                                                            type="email">
+                                                            type="email" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-12 col-md-12">
                                                     <div class="billing-info">
                                                         <label>Address</label>
-                                                        <input name="address" type="text">
+                                                        <input name="address" type="text" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="billing-info">
                                                         <label>city</label>
-                                                        <input name="city" type="text">
+                                                        <input name="city" type="text" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="billing-info">
                                                         <label>Number</label>
                                                         <input name="number" value="<?php echo $userdata['mobile']; ?>"
-                                                            type="number">
+                                                            type="number" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="billing-info">
                                                         <label>Zip/Postal Code</label>
                                                         <input name="zip" type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-6">
+                                                            <div class="billing-info">
+                                                                <label>Coupen Code</label>
+                                                                <input name="code" type="text">
+                                                            </div>
+                                                        </div>
+                                                        <div class="billing-btn">
+                                                            <button name="applycoupen" class="mt-4" type="button">Apply</button>
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -169,12 +193,24 @@
                                                 </div>
                                             </div>
                                         </form>
+                                        
                                     </div>
+                                
                                 </div>
                             </div>
                         </div>
-                        <?php } ?>
+                        <?php }else{
+                            echo $websiteclosemsg;
+                        } ?>
                     </div>
+                    <?php if($iscarterror == 'yes'){ ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Damm!!</strong> <?php echo $cart_min_price_msg; ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
             <div class="col-lg-3">

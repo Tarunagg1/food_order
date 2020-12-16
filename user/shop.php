@@ -88,7 +88,8 @@ $arrtype = array("veg","non-veg","both");
                                                         echo "&nbsp;&nbsp;&nbsp;<br/>";
                                                     }
                                                 ?>
-                                                    <select class="qtydrop" required name="qty" id="qty<?php echo $dish['id'] ?>">
+                                                    <?php if($webclose == 0){ ?>
+                                                        <select class="qtydrop" required name="qty" id="qty<?php echo $dish['id'] ?>">
                                                             <option value="0">---Select Qty---</option>
                                                            <?php
                                                                  for($i=1; $i<=20; $i++){
@@ -96,7 +97,10 @@ $arrtype = array("veg","non-veg","both");
                                                                  }           
                                                            ?>
                                                     </select>
-                                                    <button onclick="addtocart('<?php echo $dish['id'] ?>','add')" class="cartbtn"><i class="fas fa-cart-plus"></i></button>
+                                                    <button onclick="addtocart('<?php echo $dish['id'] ?>','add')" class="cartbtn"><i class="fas fa-cart-plus"></i></button>   
+                                                    <?php }else{ 
+                                                        echo "<strong>$websiteclosemsg</strong>";
+                                                    }?>
                                                 </div>
                                             </div>
 										</div>

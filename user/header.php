@@ -9,6 +9,15 @@ $curarr = explode('/',$curstr);
 $curpath = $curarr[count($curarr)-1];
 $pagetitle = explode('.',$curpath)[0];
 
+$setting = getwebsetting();
+
+$webclose = $setting['website_close'];
+$websiteclosemsg = $setting['website_close_msg'];
+$cart_min_price = $setting['cart_min_price'];
+$cart_min_price_msg = $setting['cart_min_msg'];
+
+getdishcartstatus();
+
 $cartarr = getuserfullcart();
 $getUserDetails=getuserbyid();
 

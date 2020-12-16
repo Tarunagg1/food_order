@@ -131,9 +131,15 @@ if(!isset($_SESSION['IS_LOGIN'])){
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="contactus.php">
+            <a class="nav-link" href="contactus">
               <i class="mdi mdi-grid-large menu-icon"></i>
               <span class="menu-title">Contact us</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="setting">
+              <i class="mdi mdi-grid-large menu-icon"></i>
+              <span class="menu-title">Setting</span>
             </a>
           </li>
 		  <li class="nav-item">

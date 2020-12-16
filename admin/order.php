@@ -31,7 +31,11 @@ $res = mysqli_query($con,$sql);
                                 while ($row = mysqli_fetch_assoc($res)) {
                                 ?>
                             <tr>
-                            <td><?php echo $row['id']; ?></td>
+                            <td>
+                                  <a href="order_detail?id=<?php echo $row['id'];  ?>"><div class="odetail">
+                                      <?php echo $row['id']; ?>
+                                  </div> </a>
+                            </td>
                             <td>
                                <p> <?php echo $row['name'] .'/'; ?></p>
                                 <p><?php echo $row['email'] .'/'; ?></p>

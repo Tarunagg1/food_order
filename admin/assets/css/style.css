@@ -29560,3 +29560,10 @@ div.tagsinput span.tag a {
 .orderstatussuccess{
     background-color: green;
 }
+
+.odetail{
+  background: #666;
+    padding: 10px;
+    color: #fff;
+    text-align: center;
+}

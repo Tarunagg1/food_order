@@ -55,10 +55,13 @@ if(isset($_POST['adddish'])){
 
           $attributearr = $_POST['attribute'];
           $pricearr = $_POST['price'];
+          $statusarr = $_POST['status'];
+
           foreach ($attributearr as $key => $value) {
             $attr = $value;
             $price = $pricearr[$key];
-            mysqli_query($con,"INSERT INTO `dish_details`(`dish_id`, `attribute`, `price`) VALUES ('$did','$attr','$price')");
+            $status = $statusarr[$key];
+            mysqli_query($con,"INSERT INTO `dish_details`(`dish_id`, `attribute`, `price`,`status`) VALUES ('$did','$attr','$price','$status')");
           }
           // redirect('dish.php');
         }
@@ -86,16 +89,18 @@ if(isset($_POST['adddish'])){
             $attributearr = $_POST['attribute'];
             $pricearr = $_POST['price'];
             $dist_details_id = $_POST['dish_details_id'];
-            
+            $statusarr = $_POST['status'];
+            // print_r($statusarr);
             foreach ($attributearr as $key => $value) {
               $attr = $value;
               $price = $pricearr[$key];
-              
+              $status = $statusarr[$key];
+
               if(isset($dist_details_id[$key])){
                 $did = $dist_details_id[$key];
-                mysqli_query($con,"UPDATE `dish_details` SET `attribute`='$attr',`price`='$price',`type`='$typedish' WHERE id='$did'");
+                mysqli_query($con,"UPDATE `dish_details` SET `attribute`='$attr',`status`='$status',`price`='$price' WHERE id='$did'");
               }else{
-                mysqli_query($con,"INSERT INTO `dish_details`(`dish_id`, `attribute`, `price`) VALUES ('$id','$attr','$price')");
+                mysqli_query($con,"INSERT INTO `dish_details`(`dish_id`, `attribute`, `price`,`status`) VALUES ('$id','$attr','$price','$status')");
               }
             }
             redirect('dish.php');
@@ -162,11 +167,18 @@ $arraytype = array("veg","non-veg")
                       <label for="number">Dish Details</label>
                     <?php  if($id == 0) { ?>
                        <div class="row">
-                          <div class="col-6">
+                          <div class="col-4">
                              <input type="text" class="form-control"  name="attribute[]" id="attribute1" placeholder="attribute 1" required>
                           </div>
-                          <div class="col-6">
+                          <div class="col-4">
                              <input type="text" class="form-control"  name="price[]" id="price1" placeholder="Price 1" required>
+                          </div>
+                          <div class="col-4">
+                            <select class="form-control" name="status[]">
+                              <option value="" disabled selected>Select Status</option>
+                              <option value="1">Active</option>
+                              <option value="0">Deative</option>
+                            </select>
                           </div>
                         </div>
                     <?php } else{
@@ -175,13 +187,26 @@ $arraytype = array("veg","non-veg")
                           while($distdetails = mysqli_fetch_assoc($dis_attr_row)){ 
                       ?>
                         <div class="row mt-5">
-                          <div class="col-5">
+                          <div class="col-4">
                           <input type="hidden" value="<?php echo $distdetails['id'] ?>" name="dish_details_id[]">
 
                              <input type="text" class="form-control" value="<?php echo $distdetails['attribute'] ?>" name="attribute[]" id="attribute1" placeholder="attribute 1" required>
                           </div>
-                          <div class="col-5">
+                          <div class="col-3">
                              <input type="text" class="form-control" value="<?php echo $distdetails['price'] ?>" name="price[]" id="price1" placeholder="Price 1" required>
+                          </div>
+                          <div class="col-3">
+                            <select class="form-control" name="status[]">
+                              <option value="" disable selected>Select Status</option>
+                              <?php if($distdetails['status'] == 1){ ?>
+                                <option value="1" selected>Active</option>
+                                <option value="0">Deative</option>
+                              <?php } ?>
+                              <?php if($distdetails['status'] == 0){ ?>
+                                <option value="1">Active</option>
+                                <option value="0" selected>Deative</option>
+                              <?php } ?>
+                             </select>
                           </div>
                           <?php
                               if($i != 1){ ?>
@@ -215,12 +240,19 @@ $arraytype = array("veg","non-veg")
   function addmore() {
     inputcounter++;
     var dishbox1 = `<div class="row mt-5" id="dish_box${inputcounter}">
-                          <div class="col-5">
+                          <div class="col-4">
                              <input type="text" class="form-control"  name="attribute[]" id="attribute${inputcounter}" placeholder="attribute ${inputcounter}" required>
                           </div>
-                          <div class="col-5">
+                          <div class="col-3">
                              <input type="text" class="form-control"  name="price[]" id="price${inputcounter}" placeholder="Price ${inputcounter}" required>
                           </div>
+                          <div class="col-3">  
+                          <select class="form-control" name="status[] required">
+                              <option value="" disabled selected>Select Status</option>
+                              <option value="1">Active</option>
+                              <option value="0">Deative</option>
+                            </select>
+                        </div>
                           <div class="col-2">
                           <button type="button" class="btn btn-danger" onclick="remove(${inputcounter})">Remove</button>
                           </div>
