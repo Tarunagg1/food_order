@@ -1,5 +1,4 @@
 <?php
-
 function pr($arr){
     echo "<pre>";
     print_r($arr);
@@ -74,7 +73,7 @@ function getdishcartstatus()
         foreach($_SESSION['cart'] as $key => $list){
               // $list['dish_details_id']
               $dishdetailsid[] = $list['dish_details_id'];
-        }
+          }
     }
 }
 
@@ -175,7 +174,7 @@ function getorderdetailsbyid($oid)
 {
     global $con;
     $data = array();
-    $sql = "SELECT order_detail.price,order_detail.qty,dish_details.attribute,dish.dish
+    $sql = "SELECT order_detail.dish_details_id,order_detail.price,order_detail.qty,dish_details.attribute,dish.dish
             from order_detail,dish_details,dish
             WHERE order_detail.order_id = '$oid' AND
             order_detail.dish_details_id=dish_details.id AND
@@ -336,6 +335,58 @@ function getwebsetting(){
   $res = mysqli_fetch_assoc(mysqli_query($con,"SELECT * FROM web_setting WHERE id='1'"));
   return $res;
 }
+
+function getrattinglist($did,$oid)
+{
+  $arr = array('Bed','Below Average','Average','Good','Very Good');
+  $html = '<select onchange=updateratting("'.$did.'","'.$oid.'") id="rate'.$did.'">';
+    $html .= '<option>Select ratting</option>';
+    foreach ($arr as $key => $value) {
+      $id = $key+1;
+      $html .= "<option value=$id>$value</option>";
+    }
+  $html .= '</select>';
+  return $html;
+}
+
+function getratting($did,$oid)
+{
+  global $con;
+  $q = "SELECT * FROM order_ratting WHERE `order_id`='$oid' AND `dish_details_id`='$did' AND is_active='1'";
+  $res = mysqli_query($con,$q);
+  if(mysqli_num_rows($res) > 0){
+    $row = mysqli_fetch_assoc($res);
+    $ratting = $row['ratting'];
+    $arr = array('','Bed','Below Average','Average','Good','Very Good');
+    echo $arr[$ratting];
+  }else{
+      echo getrattinglist($did,$oid);
+  }
+}
+
+function getrattingbydishid($id)
+{
+  global $con;
+  $q = "SELECT id FROM dish_details WHERE dish_id='$id'";
+  $res = mysqli_query($con,$q);
+  $str = '';
+  while($row = mysqli_fetch_assoc($res)){
+    $str .= "dish_details_id='".$row['id']."' OR ";
+  }
+  $str = rtrim($str," OR");
+  $sql = "SELECT sum(ratting) as ratting , count(*) as total FROM order_ratting WHERE $str";
+  $res = mysqli_query($con,$sql);
+  $arr = array('','Bed','Below Average','Average','Good','Very Good');
+  $row = mysqli_fetch_assoc($res);
+  if($row['total'] > 0){
+    $totalrate = $row['ratting'] / $row['total'];
+    $t = "<span>(".$arr[round($totalrate)].") Ratting by ".$row['total']."</span>";
+    echo $t;
+  } 
+}
+
+
+
 
 
 ?>

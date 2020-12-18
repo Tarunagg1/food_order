@@ -9,6 +9,7 @@
     if(!count($cartarr) > 0){
         redirect('shop');
     }
+    $uid = $_SESSION['USER_ID'];
     $islogin = false;
     $userdata = '';
     if(isset($_SESSION['USER_ID']) && isset($_SESSION['USER_NAME'])){
@@ -27,7 +28,6 @@
         }
 
       if($iscarterror == ''){
-        $uid = $_SESSION['USER_ID'];
         $name = get_safe_value($_POST['fname']);
         $email =get_safe_value($_POST['email']);
         $address = get_safe_value($_POST['address']);
@@ -35,16 +35,37 @@
         $number = get_safe_value($_POST['number']);
         $zip = get_safe_value($_POST['zip']);
         $paymenttype = get_safe_value($_POST['paymenttype']);
-        $sql = "INSERT INTO `order_master`(`user_id`, `name`, `email`, `mobile`, `address`, `total_price`, `delivery_boy_id`, `payment_status`, `order_status`,`zip`) VALUES ('$uid','$name','$email','$number ','$address','$totalPrice','not-asign','pending','1','$zip')";
+        $sql = "INSERT INTO `order_master`(`user_id`, `name`, `email`, `mobile`, `address`, `total_price`, `delivery_boy_id`,`payment_type`, `payment_status`, `order_status`,`zip`) VALUES ('$uid','$name','$email','$number ','$address','$totalPrice','not-asign','$paymenttype','pending','1','$zip')";
         mysqli_query($con,$sql);
         $insertid = mysqli_insert_id($con);
         foreach($cartarr as $key=>$val){
             mysqli_query($con,"INSERT INTO `order_detail`(`order_id`, `dish_details_id`, `price`, `qty`) VALUES ('$insertid','$key','".$val['price']."','".$val['qty']."')");
         }
         emptycart();
-        $msg = orderemail($insertid);
-        sendmailuser($email,"Your Order Placed Successfully",$msg);
-        redirect('shop');
+        if($paymenttype == 'Cod'){
+            $msg = orderemail($insertid);
+            sendmailuser($email,"Your Order Placed Successfully",$msg);
+            redirect('shop');
+        }
+        if($paymenttype == 'paytm'){
+            $html = '<form method="post" action="pgRedirect.php" name="frmpaymt" style="display:none;">
+                        <input id="ORDER_ID" tabindex="1" maxlength="20" size="20"
+                            name="ORDER_ID" autocomplete="off"
+                            value="'.$insertid.'_'.time().'">
+                        <input id="CUST_ID" tabindex="2" maxlength="12" size="12" name="CUST_ID" autocomplete="off" value="'.$uid.'">
+                        <input id="INDUSTRY_TYPE_ID" tabindex="4" maxlength="12" size="12" name="INDUSTRY_TYPE_ID" autocomplete="off" value="Retail">                       <td><input id="CHANNEL_ID" tabindex="4" maxlength="12"
+                            size="12" name="CHANNEL_ID" autocomplete="off" value="WEB">
+                    
+                        <input title="TXN_AMOUNT" tabindex="10"
+                            type="text" name="TXN_AMOUNT"
+                            value="'.$totalPrice.'">
+                        <input value="CheckOut" type="submit" onclick="">
+                    </form>
+                    <script type="text/javascript">
+                        document.frmpaymt.submit();
+                    </script>';
+            echo $html;
+        }
       }
     }
 
@@ -183,6 +204,10 @@
                                                     <input type="radio" name="paymenttype" value="cod" checked="">
                                                     <label>Cash On delivery(Cod)</label>
                                                 </div>
+                                                <div class="single-ship">
+                                                    <input type="radio" name="paymenttype" value="paytm" checked="">
+                                                    <label>Paytm</label>
+                                                </div>
                                             </div>
                                             <div class="billing-back-btn">
                                                 <div class="billing-back">
@@ -228,7 +253,7 @@
                                     <h4><a href="#">Phantom Remote </a></h4>
                                     <h6>Qty: <?php echo $list['qty']?></h6>
                                     <span><?php echo 
-												$list['qty']*$list['price'];?> Rs</span>
+										$list['qty']*$list['price'];?> Rs</span>
                                 </div>
 
                             </li>

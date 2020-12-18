@@ -71,6 +71,8 @@ $arrtype = array("veg","non-veg","both");
                                                             echo ($dish['type'] == 'veg') ? "<span class='veg'>veg</span>" : "<span class='non-veg'>non-veg</span>"; 
                                                     ?>
                                                     <a href="javascript:void(0)"><?php echo $dish['dish']; ?> </a>
+                                                    <a href="javascript:void(0)"><?php getrattingbydishid($dish['id']); ?> </a>
+                                                    
                                                 </h4>
                                                 <?php
                                                 ?>

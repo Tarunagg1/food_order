@@ -240,3 +240,21 @@ jQuery("#frmPassword").on('submit',function(e){
     })
 })
 
+
+function updateratting(did,oid){
+    let rate = jQuery('#rate'+did).val();
+    let rate_str = jQuery('#rate'+did+' option:selected').text();
+    if(rate == ''){
+
+    }else{
+        jQuery.ajax({
+            url:'updateratting',
+            type:'post',
+            data:'id='+did+'&rate='+rate+'&orderid='+oid,
+            success:function(res){
+                jQuery('#ratting'+did).html("<div id='ratting'>"+rate_str+"</div>")
+                console.log(res)
+            }
+        })
+    }
+}

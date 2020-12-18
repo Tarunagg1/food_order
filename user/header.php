@@ -8,6 +8,7 @@ $curstr = $_SERVER['REQUEST_URI'];
 $curarr = explode('/',$curstr);
 $curpath = $curarr[count($curarr)-1];
 $pagetitle = explode('.',$curpath)[0];
+getdishcartstatus();
 
 $setting = getwebsetting();
 
@@ -16,7 +17,6 @@ $websiteclosemsg = $setting['website_close_msg'];
 $cart_min_price = $setting['cart_min_price'];
 $cart_min_price_msg = $setting['cart_min_msg'];
 
-getdishcartstatus();
 
 $cartarr = getuserfullcart();
 $getUserDetails=getuserbyid();
@@ -89,7 +89,7 @@ if(isset($_POST['updatecart'])){
                                     <li class="top-hover"><a href="javascript:void(0)">Welcome <span id="headeruname"><?php echo $getUserDetails['name']; ?></span> <i class="ion-chevron-down"></i></a>
                                         <ul>
                                             <li><a href="profile">Profile</a></li>
-                                            <li><a href="orderhistory">My Order</a></li>
+                                            <li><a href="order-history">My Order</a></li>
                                             <li><a href="logout">Logout</a></li>
                                         </ul>
                                     </li>
