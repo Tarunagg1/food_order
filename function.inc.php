@@ -13,6 +13,7 @@ function get_safe_value($input){
     global $con;
     $input = mysqli_real_escape_string($con,$input);
     $input = trim($input);
+    $input = htmlentities($input);
     return $input;
 }
 
@@ -386,7 +387,50 @@ function getrattingbydishid($id)
 }
 
 
+function managewallet($uid,$amt,$type,$msg,$paymentstatus,$paymentmethod,$txnid)
+{
+  global $con;
+  echo $q = "INSERT INTO `wallet`(`userid`, `amt`, `type`, `msg`,`status`,`paymentmethod`,`txn_id`) VALUES ('$uid','$amt','$type','$msg','$paymentstatus','$paymentmethod','$txnid')";
+  $res = mysqli_query($con,$q);
+}
 
+function getwallet($uid)
+{
+  global $con;
+  $sql = "SELECT * FROM wallet WHERE userid='$uid' ORDER BY id DESC";
+  $res = mysqli_query($con,$sql);
+  $arr = array();
+  while($row = mysqli_fetch_assoc($res)){
+      $arr[] = $row;
+  }
+  return $arr;
+}
+
+function getwalletamt($uid)
+{
+  global $con;
+  $sql = "SELECT * FROM wallet WHERE userid='$uid' AND status='1'";
+  $res = mysqli_query($con,$sql);
+  $in = 0;
+  $out = 0;
+  while($row = mysqli_fetch_assoc($res)){
+    if($row['type'] == 'in'){
+      $in = $in + $row['amt'];
+    }else{
+      $out = $out + $row['amt'];
+    }
+  }
+  return $in-$out;
+}
+
+function getSale($start,$end)
+{
+  global $con;
+  $sql = "SELECT sum(total_price) as total FROM order_master WHERE `added_on` between '$start' AND '$end' AND `order_status`='4'";
+  $res = mysqli_query($con,$sql);
+  $data = mysqli_fetch_assoc($res);
+  return $data['total'];
+}
 
 
 ?>

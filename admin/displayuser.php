@@ -19,7 +19,6 @@ if(isset($_GET['type']) && $_GET['type'] !== '' && isset($_GET['id']) && $_GET['
   <div class="card">
             <div class="card-body">
               <h4 class="mb-5">Category Master</h4>
-              <a href="managecaterogy.php" class="btn btn-lights0"> Add category</a>
               <div class="row">
                 <div class="col-12">
                   <div class="table-responsive">
@@ -27,11 +26,12 @@ if(isset($_GET['type']) && $_GET['type'] !== '' && isset($_GET['id']) && $_GET['
                       <thead>
                         <tr>
                             <th width="10%">S No</th>
-                            <th width="20%">Name</th>
+                            <th width="15%">Name</th>
                             <th width="20%">Email</th>
                             <th width="20%">Mobile</th>
+                            <th width="15%">Amount</th>
                             <th width="15%">Added on</th>
-                            <th width="15%">Actions</th>
+                            <th width="20%">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -45,9 +45,10 @@ if(isset($_GET['type']) && $_GET['type'] !== '' && isset($_GET['id']) && $_GET['
                             <td><?php echo $row['name']; ?></td>
                             <td><?php echo $row['email']; ?></td>
                             <td><?php echo $row['mobile']; ?></td>  
+                            <td><?php echo getwalletamt($row['id']); ?></td>  
                             <td><?php $datestr = strtotime($row['added_on']); echo date('d-m-y',$datestr) ; ?></td>                         
                             <td>
-                               <a href="?id=<?php echo $row['id']?>&type=view"><label class="badge badge-info">View</label></a> &nbsp;
+                               <a href="addmoney?id=<?php echo $row['id']; ?>"><label class="badge badge-info">Add money</label></a> &nbsp;
                                <?php
                                   if($row['status'] == 1){
                                     ?>

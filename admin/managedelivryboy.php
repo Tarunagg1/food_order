@@ -20,7 +20,7 @@ if(isset($_POST['adddelivary'])){
     $name = get_safe_value($_POST['name']);
     $mobile = get_safe_value($_POST['number']);
     $pass = get_safe_value($_POST['password']);
-    $encpass = md5($password);
+    $encpass = md5($pass);
     if($pass == ""){
         $encpass = $password;
     }
@@ -34,7 +34,7 @@ if(isset($_POST['adddelivary'])){
         $msg = "Mobile Number allready exists";    
     }else {
       if($id == ''){
-          $q = "INSERT INTO `delivery_boy`(`name`, `mobile`, `password`) VALUES ('$name','$mobile','$$encpass')";
+          $q = "INSERT INTO `delivery_boy`(`name`, `mobile`, `password`) VALUES ('$name','$mobile','$encpass')";
         }else{
           $q = "UPDATE `delivery_boy` SET `name`='$name',`mobile`='$mobile',`password`='$encpass' WHERE id='$id'";
         }

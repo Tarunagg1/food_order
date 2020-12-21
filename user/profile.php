@@ -9,6 +9,8 @@ if(!isset($_SESSION['USER_ID'])){
             <div class="container">
                 <div class="row">
                     <div class="ml-auto mr-auto col-lg-9">
+						<div><h5>Referral Code:- <?php echo $getUserDetails['refreal_code']; ?></h5> </div>
+						<div><h5>Referral Link:- <?php echo sitepath."user/login_register?referal_code=".$getUserDetails['refreal_code']; ?></h5> </div>
                         <div class="checkout-wrapper">
                             <div id="faq" class="panel-group">
                                 <div class="panel panel-default">

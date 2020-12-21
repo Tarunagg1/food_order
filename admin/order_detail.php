@@ -6,13 +6,19 @@ if(isset($_GET['id']) && $_GET['id']>0){
 	
 	if(isset($_GET['order_status']) &&  isset($_GET['id'])){
 		$order_status=get_safe_value($_GET['order_status']);
-		mysqli_query($con,"update order_master set order_status='$order_status' where id='$id'");
+		if($order_status == 5){
+			$date = date('Y-m-d h:m:s');
+			mysqli_query($con,"update order_master set order_status='$order_status',`cancel_by`='admin',`cancel_at`='$date' where id='$id'");
+		}else{
+			mysqli_query($con,"update order_master set order_status='$order_status' where id='$id'");			
+		}
 		redirect('order_detail.php?id='.$id);
 	}
 	
 	if(isset($_GET['delivery_boy'])){
 		$delivery_boy=get_safe_value($_GET['delivery_boy']);
-		mysqli_query($con,"update order_master set delivery_boy_id='$delivery_boy' where id='$id'");
+		$date = date('Y-m-d h:i:s');
+		mysqli_query($con,"update order_master set delivery_boy_id='$delivery_boy',Asign_on_boy='$date' where id='$id'");
 		redirect('order_detail.php?id='.$id);
 	}
 	

@@ -13,19 +13,29 @@ if($type === "register"){
     $email = get_safe_value($_POST['user-email']);
     $number = get_safe_value($_POST['user-number']);
     $pass = get_safe_value($_POST['user-password']);
+    $pass = get_safe_value($_POST['user-password']);
     $encpass = password_hash($pass,PASSWORD_BCRYPT);
+    $fromreferalcode = 'NULL';
     $checkemail = mysqli_num_rows(mysqli_query($con,"SELECT * FROM user WHERE email='$email'"));
     if($checkemail > 0){
         $arr = array('status'=>'error','msg'=>'email allredy exit','field'=>'email_err');
         echo json_encode($arr);
     }else{
         $randstr = rand_str();
-        $sql = "INSERT INTO `user`(`name`, `email`, `mobile`, `password`,`randstr`) VALUES ('$name','$email','$number','$encpass','$randstr')";
+        $refralcode = rand_str();
+        if(isset($_SESSION['FROM_REFERRAL_CODE']) && $_SESSION['FROM_REFERRAL_CODE'] != ''){
+            $fromreferalcode = $_SESSION['FROM_REFERRAL_CODE'];
+        }
+        $sql = "INSERT INTO `user`(`name`, `email`, `mobile`, `password`,`randstr`,`refreal_code`,`from_referal_code`) VALUES ('$name','$email','$number','$encpass','$randstr','$refralcode','$fromreferalcode')";
         mysqli_query($con,$sql);
         $id = mysqli_insert_id($con);
+        $getsetting = getwebsetting();
+        $free = $getsetting['free_wallet_amt'];
+        managewallet($id,$free,"in","Welcome bounes",'1','shop',"shop_.$id");
         $sub = 'Thank you for registration';
         $msg = 'congo please verify your id no http://localhost/foodorder/user/verify.php?verifyid='.$randstr;  
         sendmailuser($email,$sub,$msg);
+        unset($_SESSION['FROM_REFERRAL_CODE']);
         $arr = array('status'=>'success','msg'=>'Thanks for Registration Please check your email id for further verification OF account.','field'=>'form_msg');
         echo json_encode($arr);
     }

@@ -1,6 +1,7 @@
 <?php
     include('header.php');
     include('../mail_function.php');
+    $iswalletdis = "";
     $totalPrice = 0;
     $cartarr = getuserfullcart();
     foreach ($cartarr as $key => $list) {
@@ -9,7 +10,7 @@
     if(!count($cartarr) > 0){
         redirect('shop');
     }
-    $uid = $_SESSION['USER_ID'];
+    $uid = 0;
     $islogin = false;
     $userdata = '';
     if(isset($_SESSION['USER_ID']) && isset($_SESSION['USER_NAME'])){
@@ -28,6 +29,7 @@
         }
 
       if($iscarterror == ''){
+        $uid = $_SESSION['USER_ID'];
         $name = get_safe_value($_POST['fname']);
         $email =get_safe_value($_POST['email']);
         $address = get_safe_value($_POST['address']);
@@ -42,6 +44,14 @@
             mysqli_query($con,"INSERT INTO `order_detail`(`order_id`, `dish_details_id`, `price`, `qty`) VALUES ('$insertid','$key','".$val['price']."','".$val['qty']."')");
         }
         emptycart();
+        if($paymenttype == 'shopwallet'){
+            $shoptxid = $uid."_".time();
+            managewallet($uid,$totalPrice,"out","Shop purchase_$uid","1","shop_wallet_$uid",$shoptxid);
+            mysqli_query($con,"UPDATE order_master SET payment_status='Success', payment_id='$shoptxid' WHERE id='$insertid'");
+            $msg = orderemail($insertid);
+            sendmailuser($email,"Your Order Placed Successfully",$msg);
+            redirect('shop');
+        }
         if($paymenttype == 'Cod'){
             $msg = orderemail($insertid);
             sendmailuser($email,"Your Order Placed Successfully",$msg);
@@ -66,6 +76,7 @@
                     </script>';
             echo $html;
         }
+       
       }
     }
 
@@ -200,12 +211,20 @@
 
                                             </div>
                                             <div class="ship-wrapper">
+                                            <?php if($walletamt < $totalprice){
+                                                    $iswalletdis = "disabled='disabled'";
+                                                 }
+                                            ?>
                                                 <div class="single-ship">
-                                                    <input type="radio" name="paymenttype" value="cod" checked="">
+                                                    <input type="radio" name="paymenttype" value="shopwallet" <?php echo $iswalletdis; ?> checked="checked">
+                                                    <label>My wallet</label>
+                                                </div>
+                                                <div class="single-ship">
+                                                    <input type="radio" name="paymenttype" value="cod">
                                                     <label>Cash On delivery(Cod)</label>
                                                 </div>
                                                 <div class="single-ship">
-                                                    <input type="radio" name="paymenttype" value="paytm" checked="">
+                                                    <input type="radio" name="paymenttype" value="paytm">
                                                     <label>Paytm</label>
                                                 </div>
                                             </div>

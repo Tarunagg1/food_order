@@ -5350,7 +5350,6 @@ h5.panel-title span {
     margin: auto;
     width: 100%;
     display: flex;
-    justify-content:center;
     align-items:center;
 }
 .typecon span{
@@ -5414,4 +5413,108 @@ h5.panel-title span {
 }
 .orderstatusfailure{
     background-color: red;
+}
+.in{
+    color:green;
+    font-weight:bold;
+}   
+.out{
+    color:red;
+    font-weight:bold;
+}
+.walletmain{
+    background-color:#00d09c;
+    height: 300px;
+}
+.walletmain .walletbalance span{
+    color: #fff;
+    font-size: 3rem;
+    margin: 4px;
+    font-weight: 400;
+}
+.walletmain .walletbalance h2{
+    color: #fff;
+    font-size: 3rem;
+    font-weight: 400;
+}
+.walletmain .walletbalance p{
+    color: #fff;
+    font-size: 1.2rem;
+    margin: 14px 7px;
+}
+.walletbalance{
+    padding: 50px;
+}
+.addmoney{
+    background-color: #ffffff;
+    box-shadow: 1px 1px 1px 1px lightgreen;
+    height: 300px;
+    position:relative;
+    display: flex;
+    flex-direction: column;
+}
+.addmoney span{
+    margin-left: 8rem;
+    color: red;
+}
+.addmoney p{
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 15px;
+    font-weight: 400;
+}
+.addmoney .input{
+    width: 69%;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: none;
+    font-size: 1.5rem;
+    padding-left: 8rem;
+}
+.addmoney .predefinamount{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top:2rem;
+}
+.addmoney .pamt{
+    cursor: pointer;
+    background-color: lightgreen;
+    padding: 0.3rem;
+    border-radius: 11px;
+    font-size: 12px;
+}
+.addmoney .button{
+    position:absolute;
+    outline:none;
+    margin-left:1rem;
+    width:90%;
+    bottom: 10px;
+    background: #00d09c;
+    color: #fff;
+    cursor:pointer;
+    border:none;
+    border-radius:3px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.searchform{
+    width: 42%;
+}
+.searchbox{
+    width: 70%;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+.searchbtn{
+    width: 26%;
+    border-radius: 5px;
+    background-color: antiquewhite;
+    cursor:pointer;
 }

@@ -5,6 +5,13 @@ if(!isset($_SESSION['USER_ID'])){
 }
 $uid = $_SESSION['USER_ID'];
 
+if(isset($_GET['cancel_id'])){
+    $oid = get_safe_value($_GET['cancel_id']);
+    $date = date('Y-m-d h:i:s');
+    $sql = "UPDATE order_master SET `order_status`='5',`cancel_by`='user',`cancel_at`='$date' WHERE `id`='$oid' AND `order_status`='1' AND `user_id`='$uid'";
+    mysqli_query($con,$sql);
+    redirect('order-history');    
+}
 
 $sql="select order_master.*,order_status.order_status as order_status_str from order_master,order_status where order_master.order_status=order_status.id and order_master.user_id='$uid' order by order_master.id desc";
 $res=mysqli_query($con,$sql);
@@ -26,6 +33,8 @@ $res=mysqli_query($con,$sql);
                                             <th>Coupen</th>
                                             <th>Address</th>
                                             <th>Zip code</th>
+                                            <th>Order time</th>
+                                            <th>payment type</th>
                                             <th>Order Status</th>
                                             <th>Payment Status</th>
                                         </tr>
@@ -44,8 +53,11 @@ $res=mysqli_query($con,$sql);
                                             <td></td>
                                             <td><?php echo $row['address']?></td>
 											<td><?php echo $row['zip']?></td>
+                                            <td><?php echo $row['added_on']?></td>
+											<td><?php echo $row['payment_type']?></td>
 											<td>
-                                                <?php echo $row['order_status_str'] ?>
+                                                <?php echo $row['order_status_str']; ?>
+                                                <?php if($row['order_status'] == 1){ $oid=$row['id'];  echo "<div><a href='?cancel_id=$oid'>Cancel order</a></div>"; }  ?>
                                             </td>
 											<td>
 												<div class="paymentstatus orderstatus<?php echo $row['payment_status']?>"><?php echo ucfirst($row['payment_status'])?></div>

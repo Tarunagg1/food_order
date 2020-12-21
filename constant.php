@@ -7,6 +7,6 @@ define('SITE_DISP_IMAGE','http://localhost/foodorder/media/dish/');
 
 define('PATH_BANNER_IMAGE',$_SERVER['DOCUMENT_ROOT'].'/foodorder/media/banner/');
 define('SITE_BANNER_DISP_IMAGE','http://localhost/foodorder/media/banner/');
-
+define('sitepath','http://localhost/foodorder/');
 
 ?>

@@ -1,5 +1,8 @@
 <?php
 include('header.php');
+if(isset($_SESSION['USER_ID'])){
+    redirect('shop');
+}
 ?>
         <div class="login-register-area pt-95 pb-100">
             <div class="container">

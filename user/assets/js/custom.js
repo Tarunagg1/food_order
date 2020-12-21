@@ -87,6 +87,13 @@ function setfood(type){
         jQuery("#type").val(type);
         jQuery("#frmcatdist")[0].submit();
 }
+
+function setsearch(){
+        jQuery('#search_str').val(jQuery("#search").val());
+        jQuery("#frmcatdist")[0].submit();
+}
+
+
 function addtocart(id,type){
         const qty = jQuery("#qty"+id).val();
         const attr = jQuery('input[name="radio_'+id+'"]:checked').val();

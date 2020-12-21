@@ -45,7 +45,10 @@ $res = mysqli_query($con,$sql);
                                 <p><?php echo $row['address'].'/'; ?></p>
                                 <p><?php echo $row['zip']; ?></p>
                             </td>
-                            <td><?php echo $row['total_price']; ?></td>
+                            <td>
+                             <?php
+                              echo $row['total_price'] . "/". $row['payment_type']; ?></td>
+
                             <td><p class="paymentstatus <?php echo 'orderstatus'.$row['payment_status']; ?>"><?php echo ucfirst($row['payment_status']); ?></p></td>
                             <td><?php echo $row['order_status_str']; ?></td>
                             <td><?php echo $row['added_on']; ?></td>

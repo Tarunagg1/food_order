@@ -3,6 +3,7 @@ SESSION_START();
 include('../function.inc.php');
 include('../database.inc.php');
 include('../constant.php');
+date_default_timezone_set("Asia/kolkata");
 
 $curstr = $_SERVER['REQUEST_URI'];
 $curarr = explode('/',$curstr);

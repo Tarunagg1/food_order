@@ -4,6 +4,8 @@ include('../function.inc.php');
 include('../database.inc.php');
 include('../constant.php');
 
+date_default_timezone_set("Asia/kolkata");
+
 $curstr = $_SERVER['REQUEST_URI'];
 $curarr = explode('/',$curstr);
 $curpath = $curarr[count($curarr)-1];
@@ -11,6 +13,12 @@ $pagetitle = explode('.',$curpath)[0];
 getdishcartstatus();
 
 $setting = getwebsetting();
+
+$walletamt = 0;
+if(isset($_SESSION['USER_ID']) && isset($_SESSION['USER_NAME'])){
+    $walletamt = getwalletamt($_SESSION['USER_ID']);
+}
+
 
 $webclose = $setting['website_close'];
 $websiteclosemsg = $setting['website_close_msg'];
@@ -77,18 +85,30 @@ if(isset($_POST['updatecart'])){
             <div class="header-top black-bg">
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-4 col-md-4 col-12 col-sm-4">
+                        <div class="col-lg-6 col-md-4 col-12 col-sm-4">
                             <div class="welcome-area">
                                 <!-- <p>Default welcome msg! </p> -->
                             </div>
                         </div>
-                        <div class="col-lg-8 col-md-8 col-12 col-sm-8">
+                        <div class="col-lg-4 col-md-4 col-12 col-sm-4">
+                            <div class="welcome-area">
+                                <div class="wallet">
+                                    <?php
+                                        if(isset($_SESSION['USER_ID'])){
+                                            echo "<a href='wallet'><p style='color:white; margin-top:5px;'>Wallet:- <strong> $walletamt </strong></p></a>";
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-8 col-12 col-sm-8">
                             <div class="account-curr-lang-wrap f-right">
                                 <?php if(isset($_SESSION['USER_NAME'])){    ?>                                
                                     <ul>
                                     <li class="top-hover"><a href="javascript:void(0)">Welcome <span id="headeruname"><?php echo $getUserDetails['name']; ?></span> <i class="ion-chevron-down"></i></a>
                                         <ul>
                                             <li><a href="profile">Profile</a></li>
+                                            <li><a href="wallet">My wallet</a></li>
                                             <li><a href="order-history">My Order</a></li>
                                             <li><a href="logout">Logout</a></li>
                                         </ul>

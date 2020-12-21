@@ -21,36 +21,45 @@ $paytmChecksum = isset($_POST["CHECKSUMHASH"]) ? $_POST["CHECKSUMHASH"] : ""; //
 //Verify all parameters received from Paytm pg to your application. Like MID received from paytm pg is same as your application�s MID, TXN_AMOUNT and ORDER_ID are same as what was sent by you to Paytm PG for initiating transaction etc.
 $isValidChecksum = verifychecksum_e($paramList, PAYTM_MERCHANT_KEY, $paytmChecksum); //will return TRUE or FALSE string.
 
-
 if($isValidChecksum == "TRUE") {
 	echo "<b>Checksum matched and following are the transaction details:</b>" . "<br/>";
 	if ($_POST["STATUS"] == "TXN_SUCCESS") {
-		echo "<b>Transaction status is success</b>" . "<br/>";
 		//Process your transaction here as success transaction.
 		//Verify amount & order id received from Payment gateway with your application's order id and amount.
+
+		$TXNID  = $_POST['TXNID'];
 		$oid = $_POST['ORDERID'];
 		$t = explode("_",$oid);
-		$oid = $t[0];
-		$userdata = mysqli_fetch_assoc(mysqli_query($con,"SELECT * FROM order_master WHERE id='$oid'"));
-		$uemail = $userdata['email'];
-		$TXNID  = $_POST['TXNID'];
-		mysqli_query($con,"UPDATE order_master SET payment_status='Success', payment_id='$TXNID' WHERE id='$oid'");
-		$msg = orderemail($oid);
-		sendmailuser($uemail,"Your Order Placed Successfully",$msg);
-		redirect('shop');
+		if($t[0] == 'WALLET'){
+			managewallet($t[1],$_POST['TXNAMOUNT'],"in","Adding payment","1",$_POST['GATEWAYNAME'],$TXNID);
+			redirect('wallet');
+		}else{
+			$oid = $t[0];
+			$userdata = mysqli_fetch_assoc(mysqli_query($con,"SELECT * FROM order_master WHERE id='$oid'"));
+			$uemail = $userdata['email'];
+			mysqli_query($con,"UPDATE order_master SET payment_status='Success', payment_id='$TXNID' WHERE id='$oid'");
+			$msg = orderemail($oid);
+			sendmailuser($uemail,"Your Order Placed Successfully",$msg);
+			redirect('shop');
+		}
 	}
 	else {
 		echo "<b>Transaction status is failure</b>" . "<br/>";
+		$TXNID  = $_POST['TXNID'];
 		$oid = $_POST['ORDERID'];
 		$t = $oid.explode('_',$oid);
-		$ooid = $t[0];
-		$userdata = mysqli_fetch_assoc(mysqli_query($con,"SELECT * FROM order_master WHERE id='$ooid'"));
-		$uemail = $userdata['email'];
-		$TXNID  = $_POST['TXNID'];
-		mysqli_query($con,"UPDATE order_master SET payment_status='failure',`order_status`='0',payment_id='$TXNID' WHERE id='$ooid'");
-		$msg = orderemail($oid);
-		sendmailuser($uemail,"Your Order Placed failure",$msg);
-		redirect('shop');
+		if($t[0] == 'WALLET'){
+			managewallet($t[1],$_POST['TXNAMOUNT'],"in","Adding payment","0",$_POST['GATEWAYNAME'],$TXNID);
+			redirect('wallet');
+		}else{
+			$ooid = $t[0];
+			$userdata = mysqli_fetch_assoc(mysqli_query($con,"SELECT * FROM order_master WHERE id='$ooid'"));
+			$uemail = $userdata['email'];
+			mysqli_query($con,"UPDATE order_master SET payment_status='failure',`order_status`='0',payment_id='$TXNID' WHERE id='$ooid'");
+			$msg = orderemail($oid);
+			sendmailuser($uemail,"Your Order Placed failure",$msg);
+			redirect('shop');
+		}
 	}
 
 }
